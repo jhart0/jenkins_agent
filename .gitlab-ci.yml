@@ -1,7 +1,20 @@
-stages:
-    - build
+variables:
+  CI_REGISTRY: docker.io
+  DOCKER_IMAGE: jhart0/jenkins_agent
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
 
-build:
-    stage: build
-    image: docker:dind
-    script: docker build .
+docker-build-master:
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build --pull -t "$DOCKER_IMAGE" .
+    - docker run -v /var/run/docker.sock:/var/run/docker.sock wagoodman/dive "$DOCKER_IMAGE" --ci=true
+    - docker push "$DOCKER_IMAGE"
+  only:
+    - master
