@@ -1,3 +1,3 @@
-## Jenkins Slave
+## Jenkins Agent
 
-Basic bootstrapping Ubuntu to run as Jenkins Slave
+Basic bootstrapping Ubuntu to run as Jenkins Agent
